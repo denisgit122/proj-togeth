@@ -1,0 +1,62 @@
+import './ModalCreate.css'
+import {useForm} from "react-hook-form";
+import {joiResolver} from "@hookform/resolvers/joi";
+import {managerValidator} from "../../validators";
+
+const ModalCreate = ({active,setModalActive}) => {
+
+    const {reset, register, handleSubmit, formState:{errors, isValid}} = useForm(
+        {mode:"all", resolver: joiResolver(managerValidator)}
+    )
+    const create = (data) =>{
+        setModalActive(false)
+        reset()
+    }
+    const output = () => {
+        setModalActive(false)
+        reset()
+    }
+
+    return (
+        <div className={active ? "modal active" : "modal"} onClick={() => output()}>
+            <div className="modalContent" onClick={e => e.stopPropagation()}>
+                <form className={'form'} onSubmit={handleSubmit(create)}>
+                    <input
+                        className={ errors.email? "erInp input" :"input okInp"}
+                        type="text" placeholder={'Email'} {...register("email")}
+                    />
+                    <input
+                        className={ errors.name? "erInp input" :"input okInp"}
+                        type="text" placeholder={"Name"} {...register("name")}
+                    />
+                    <input
+                        className={ errors.surName? "erInp input" :"input okInp"}
+                        type="text" placeholder={'Surname'} {...register("surName")}
+                    />
+
+                    {isValid ?
+                        <center>
+                            <button className={'buttManOk'}>
+                                Create
+                                <span></span>
+                            </button>
+                        </center>
+                        :
+                        <center>
+                            <button className={"buttManEr"}>
+                                Invalid
+                                <span></span>
+                            </button>
+                        </center>
+                    }
+
+                </form>
+            </div>
+        </div>
+
+    );
+};
+
+export {
+    ModalCreate
+};

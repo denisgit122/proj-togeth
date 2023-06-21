@@ -1,0 +1,71 @@
+.headBox{
+    display: flex;
+    width: 98.9vw;
+    cursor: pointer;
+    height: 3vw;
+    align-items: center;
+    border-top: 2px solid slategray;
+    overflow: hidden;
+    transition: .9s;
+}
+.id{
+    /*width: 7vw;*/
+    margin-right: 1.2vw;
+    margin-left: .3vw;
+    font-size: 1vw;
+}
+.name{
+    margin-right: 2vw;
+    font-size: 1vw;
+    width: 3vw;
+}
+.surname{
+    width: 3vw;
+    margin-left: .4vw;
+    margin-right: 4vw;
+    font-size: 1vw;
+}
+.email{
+    width: 13vw;
+    margin-right: 4vw;
+    margin-left: .7vw;
+    font-size: 1vw;
+}
+.phone{
+    width: 5vw;
+    margin-right: 3vw;
+    margin-left: .7vw;
+    font-size: 1vw;
+ }
+.course{
+    width: 4vw;
+    font-size: 1vw;
+}
+.course_format{
+    font-size: 1vw;
+    width: 8vw;
+    margin-left:2vw
+}
+.status{
+    font-size: 1vw;
+    margin-left: -.8vw;
+    margin-right: .6vw;
+    width: 3vw;
+}
+.already_paid{
+    font-size: 1vw;
+    margin-left: 3vw;
+    width: 6vw;
+}.manager{
+     font-size: 1vw;
+     margin-left: 1vw;
+     width: 4vw;
+ }
+
+
+.commentBox{
+    width: 98.8vw;
+    height: 15vw;
+    background: linear-gradient(#57606f, #2f3542);
+    transition: 1.6s;
+}
