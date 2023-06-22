@@ -1,7 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {ordersService} from "../../services/ordersService";
-import {query} from "express";
-
 
 let initialState = {
     orders: [],
@@ -27,9 +25,6 @@ const ordersSlice = createSlice({
     reducers: {},
     extraReducers: {
         [getAll.fulfilled]: (state, action)=>{
-            const {page, data} = action.payload
-            state.prev = page-1
-            state.next = page+1
             state.orders = action.payload
         },
     }

@@ -1,8 +1,7 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createSlice} from "@reduxjs/toolkit";
 
 
 let initialState = {
-
     errors: null,
     loading: null
 };

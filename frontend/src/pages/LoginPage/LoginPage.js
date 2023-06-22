@@ -1,7 +1,6 @@
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
 import {joiResolver} from "@hookform/resolvers/joi";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 import css from './Login.module.css'
 import {useNavigate} from "react-router-dom";
@@ -17,7 +16,6 @@ const LoginPage = () => {
     const [error, setError] = useState(null);
 
     const navigate = useNavigate();
-    const dispatch = useDispatch()
 
     const login = async (cred) => {
         try {

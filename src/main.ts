@@ -9,6 +9,7 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('My CRM-system')
@@ -20,6 +21,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/doc', app, document);
 
+  // <<<<<<< HEAD
   await app.listen(3200);
+  // =======
+  // await app.listen(3100);
+  // >>>>>>> 89c0bcdde92a9d1312b4c44ee757fa51cd616e26
 }
 bootstrap();

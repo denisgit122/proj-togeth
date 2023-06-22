@@ -11,8 +11,8 @@ const Users = () => {
 
      const location = useLocation();
 
-    // const [page, setPage] = useState(parseInt(location.search?.split('')[6] || 1));
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(parseInt(location.search?.split('')[6] || 1));
+    // const [page, setPage] = useState(1);
 
     const [pageQty, setPageQty] = useState(0);
 
