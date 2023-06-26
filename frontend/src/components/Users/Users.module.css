@@ -1,9 +1,9 @@
 .box{
     padding: 0;
     font-family: sans-serif;
-    width: 98.7vw;
+    width: 100%;
     overflow: hidden;
-    height: 102vw;
+    height: 100%;
     background: linear-gradient(#57606f, #2f3542);
     z-index: -2;
 }
@@ -12,26 +12,22 @@
     z-index: 0;
     position: absolute;
     top: 70px;
-    /*background: white;*/
-    /*height: 400px;*/
-    /*width: 400px;*/
 }
 h3{
     color: black;
 }
-.pagin{
-    /*margin-left: 50%;*/
-    /*width: 100px;*/
-}
+
 .headBoxSearch{
-    width: 100vw;
-    height: 10vw;
-    background: white;
+    width: 100%;
+    margin-top: -1vw;
+    padding-top: 2vw;
+    height: 8vw;
+    background: linear-gradient(#57606f, #2f3542);
 }
 
 .headBox{
     display: flex;
-    width: 98.8vw;
+    width: 100%;
     height: 2.5vw;
     background: #504e4e;
     align-items: center;
@@ -88,4 +84,25 @@ h3{
     cursor: pointer;
     margin-right: .7vw;
     margin-left: .1vw;
+}
+.boxBiReset{
+    width: 2vw;
+    height: 2vw;
+    position: absolute;
+    cursor: pointer;
+    margin-top: 4.6vw;
+    margin-left: 89vw;
+}
+.BiReset{
+    transition: .3s;
+    font-size: 2.4vw;
+    color: #1f1f23;
+}
+.BiReset:hover{
+    transition: .5s;
+    font-size: 2.7vw;
+}
+.conteiner{
+    width: 98.8vw;
+    background: #57606f;
 }

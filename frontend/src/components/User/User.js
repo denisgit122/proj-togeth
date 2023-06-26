@@ -1,5 +1,6 @@
 import css from './User.module.css'
 import {useState} from "react";
+import {Comments} from "../Comments/Comments";
 
 const User = ({order}) => {
     const
@@ -13,7 +14,6 @@ const User = ({order}) => {
             setActive(false)
             :
             setActive(true)
-        console.log(active)
     }
 
   let strings = '';
@@ -21,20 +21,24 @@ const User = ({order}) => {
   let creatCarDay = '';
   let _id = '';
 
-  if (order){
+  if (order.created_at){
     strings = created_at.split('-').slice(0,2);
 
     creatCar = created_at.split('-').slice(0,3);
     const arr = creatCar.splice(2,1);
     creatCarDay = arr[0].split('').splice(0,2)
-    const arrId = id.split('')
-    _id = arrId.splice(arrId.length-4, 4);
+
+  }
+  if (order.id){
+      const arrId = id.split('')
+
+      _id = arrId.splice(arrId.length-4, 4);
   }
 
   return (
       <div>
-          <div onClick={event => comment()} className={css.headBox}>
-              <div className={css.id}>{_id[0]}{_id[1]}{_id[2]}{_id[3]}</div>
+          <div onClick={() => comment()} className={css.headBox}>
+              <div className={css.id}>{id && _id[0]}{_id[1]}{_id[2]}{_id[3]}</div>
               <div className={css.name}>{ name? name : 'null'}</div>
               <div className={css.surname}>{surname? surname : 'null'}</div>
               <div className={css.email}>{email ? email : 'null'}</div>
@@ -46,14 +50,19 @@ const User = ({order}) => {
               <div className={css.status}>{status ? status : 'null'}</div>
               <div className={css.id}>{sum ? sum : 'null'}</div>
               <div className={css.already_paid}>{already_paid ? already_paid : 'null'}</div>
-              <div className={css.id}>{group ? group : 'null'}</div>
-              <div className={css.id}>{ created_at ? `${strings[0]}-${strings[1]}-${creatCarDay[1]}${creatCarDay[0]}` : 'null'}</div>
+              <div className={css.group}>{group ? group : 'null'}</div>
+              <div className={css.created_at}>{ created_at ?
+                  `${strings[0]}-${strings[1]}-${creatCarDay[1]}${creatCarDay[0]}`
+                  : 'null'}</div>
+
               <div className={css.manager}>{manager ? manager : 'null'}</div>
           </div>
           {
               active
                   ?<div></div>
-                  : <div className={css.commentBox}></div>
+                  : <div className={css.commentBox}>
+                        <Comments key={id} id={id}/>
+                  </div>
           }
       </div>
 

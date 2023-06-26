@@ -6,7 +6,9 @@ const urlsAuth ={
 }
 const urlsOrders ={
     orders:{
-        getAll: '/orders'
+        getAll: '/orders',
+        getAllComments:(id)=> `/orders/${id}/comments`
+
     }
 
 }

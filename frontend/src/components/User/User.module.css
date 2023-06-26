@@ -1,17 +1,23 @@
 .headBox{
     display: flex;
-    width: 98.9vw;
+    width: 100%;
     cursor: pointer;
     height: 3vw;
     align-items: center;
     border-top: 2px solid slategray;
+    background: linear-gradient(#57606f, #2f3542);
     overflow: hidden;
     transition: .9s;
 }
 .id{
     /*width: 7vw;*/
     margin-right: 1.2vw;
-    margin-left: .3vw;
+    margin-left: .1vw;
+    font-size: 1vw;
+}
+.group{
+    width: 5vw;
+    margin-left: -1.3vw;
     font-size: 1vw;
 }
 .name{
@@ -43,12 +49,12 @@
 }
 .course_format{
     font-size: 1vw;
-    width: 8vw;
-    margin-left:2vw
+    width: 6vw;
+    margin-left:3vw
 }
 .status{
     font-size: 1vw;
-    margin-left: -.8vw;
+    margin-left: 1.8vw;
     margin-right: .6vw;
     width: 3vw;
 }
@@ -61,11 +67,15 @@
      margin-left: 1vw;
      width: 4vw;
  }
-
+.created_at{
+    font-size: 1vw;
+    margin-left: 1vw;
+    width: 6vw;
+}
 
 .commentBox{
-    width: 98.8vw;
-    height: 15vw;
+    width: 100%;
+    height: 14vw;
     background: linear-gradient(#57606f, #2f3542);
     transition: 1.6s;
 }
