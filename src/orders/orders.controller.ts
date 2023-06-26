@@ -66,7 +66,7 @@ export class OrdersController {
   async getOrdersList(
     @Req() req: any,
     @Res() res: any,
-    @Paginate() query: PaginateQuery,
+    @Paginate() query?: PaginateQuery,
   ) {
     return res
       .status(HttpStatus.OK)
@@ -78,6 +78,25 @@ export class OrdersController {
   @Get('groups')
   async getGroups(@Req() req: any, @Res() res: any) {
     return res.status(HttpStatus.OK).json(await this.ordersService.getGroups());
+  }
+
+  @ApiResponse({ status: 200, description: 'OK' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @Get('statistic')
+  async getStatisticOnOrders(@Req() req: any, @Res() res: any) {
+    return res
+      .status(HttpStatus.OK)
+      .json(await this.ordersService.getStatisticOnOrders());
+  }
+
+  @ApiResponse({ status: 200, description: 'OK' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiBody({ type: CreateGroupDto })
+  @Post('create/group')
+  async createGroup(@Req() req: any, @Body() body: IGroup, @Res() res: any) {
+    return res
+      .status(HttpStatus.OK)
+      .json(await this.ordersService.createGroup(body));
   }
 
   @ApiParam({ name: 'orderId', required: true })
@@ -138,15 +157,5 @@ export class OrdersController {
     return res
       .status(HttpStatus.OK)
       .json(await this.ordersService.getCommentsFromOrderById(orderId));
-  }
-
-  @ApiResponse({ status: 200, description: 'OK' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiBody({ type: CreateGroupDto })
-  @Post('create/group')
-  async createGroup(@Req() req: any, @Body() body: IGroup, @Res() res: any) {
-    return res
-      .status(HttpStatus.OK)
-      .json(await this.ordersService.createGroup(body));
   }
 }
