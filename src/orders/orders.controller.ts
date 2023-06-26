@@ -24,6 +24,7 @@ import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { AuthGuard } from '@nestjs/passport';
 import { IComment, IGroup } from './interface';
 import { User } from '../auth/user.decorator';
+import { TrimPipe } from '../core';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -93,7 +94,11 @@ export class OrdersController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiBody({ type: CreateGroupDto })
   @Post('create/group')
-  async createGroup(@Req() req: any, @Body() body: IGroup, @Res() res: any) {
+  async createGroup(
+    @Req() req: any,
+    @Body(new TrimPipe()) body: IGroup,
+    @Res() res: any,
+  ) {
     return res
       .status(HttpStatus.OK)
       .json(await this.ordersService.createGroup(body));
@@ -119,7 +124,7 @@ export class OrdersController {
   @Patch(':orderId')
   async editOrder(
     @Req() req: any,
-    @Body() body: UpdateOrdersDto,
+    @Body(new TrimPipe()) body: UpdateOrdersDto,
     @Res() res: any,
     @Param('orderId') orderId: string,
   ) {
@@ -135,7 +140,7 @@ export class OrdersController {
   @Post(':orderId/comment')
   async addComment(
     @Req() req: any,
-    @Body() body: IComment,
+    @Body(new TrimPipe()) body: IComment,
     @Res() res: any,
     @Param('orderId') orderId: string,
     @User() user: any,
