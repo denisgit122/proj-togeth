@@ -1,13 +1,5 @@
-import axios from "axios";
 import {urlsAuth} from "../configs";
-
-axios.interceptors.request.use((config)=>{
-    if (authService.isAuthenticated()) {
-        const token = authService.getAccessToken();
-        config.headers.Authorization = `${token}`
-    }
-    return config
-})
+import {axiosService} from "./axiosService";
 
 
 const accessToken = "access";
@@ -15,12 +7,27 @@ const refreshToken = "refresh";
 const authService = {
 
   login: async function (data){
-   const response = await axios.post(urlsAuth.auth.login, data);
+   const response = await axiosService.post(urlsAuth.auth.login, data);
+
    if (response.status === 200){
      this.setTokens(response.data)
    }
    return response;
   },
+
+    refresh: async function() {
+      const refreshTok = this.getRefreshToken();
+      if (!refreshTok){
+          throw new Error("Refresh token isn't exist")
+      }
+        console.log(13)
+        let {data} = await axiosService.post(urlsAuth.auth.refresh );
+        console.log(14)
+        console.log(data)
+        this.setTokens(data)
+
+    },
+
 
   setTokens:({tokenPair})=>{
       localStorage.setItem(accessToken, tokenPair.accessToken )

@@ -33,7 +33,7 @@ export class AuthService {
     const accessToken = await this.jwtService.sign(
       { id: admin.id, strategy: 'access' },
       {
-        expiresIn: '10m',
+        expiresIn: '1m',
         secret: process.env.SECRET_ACCESS_WORD,
       },
     );

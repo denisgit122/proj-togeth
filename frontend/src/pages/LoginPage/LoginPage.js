@@ -1,5 +1,4 @@
 import {useForm} from "react-hook-form";
-import {useDispatch} from "react-redux";
 import {joiResolver} from "@hookform/resolvers/joi";
 
 import css from './Login.module.css'
@@ -19,8 +18,13 @@ const LoginPage = () => {
 
     const login = async (cred) => {
         try {
+
             await authService.login(cred);
-            navigate("/orders")
+            if (cred.email === 'admin@gmail.com'){
+                navigate("/orders")
+            }
+
+
         }catch (e) {
             if (e.response.status === 401){
                 setError(e.response.data.message);

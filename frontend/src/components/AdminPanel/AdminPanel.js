@@ -3,7 +3,8 @@ import {useState} from "react";
 import {ManagerDescription} from "../Admin/ManagerDescription/ManagerDescription";
 import {ButtonAdmin} from "../Admin/ButtonAdmin/ButtonAdmin";
 
-const AdminPanel = ({manager, arr}) => {
+const AdminPanel = ({manager}) => {
+
     const [active, setActive] = useState(true);
     const [cop, setCoty] = useState(false);
 

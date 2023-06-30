@@ -1,7 +1,7 @@
 import css from "../../AdminPanel/AdminPanel.module.css";
 
 const ManagerDescription = ({manager}) => {
-    const {email, name, surname, is_active, last_login} = manager;
+    const {email, name, surname, is_active, last_login, status} = manager;
 
     return (
         <div>
@@ -10,7 +10,7 @@ const ManagerDescription = ({manager}) => {
                 <div className={css.span}>email: {email}</div>
                 <div className={css.span}>name: {name}</div>
                 <div className={css.span}>surname: {surname}</div>
-                <div className={css.span}>is_active: {is_active}</div>
+                <div className={css.span}>status: {status}</div>
                 <div className={css.span}>last_login: {last_login}</div>
 
             </div>

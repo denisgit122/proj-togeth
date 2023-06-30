@@ -20,11 +20,35 @@ const getAll = createAsyncThunk (
         }
     }
 );
+const updateOrder = createAsyncThunk (
+    "carSlice/updateOrder",
+    async ({id, value, page, query}, thunkAPI)=>{
+        try {
+            const {data} = await ordersService.updateOrder(id, value);
+            thunkAPI.dispatch(getAll({page, query}))
+            return data
+        }catch (e) {
+            return thunkAPI.rejectWithValue(e.response.data);
+        }
+    }
+);
 const getAllComments = createAsyncThunk (
     "carSlice/getAllComments",
-    async (id, thunkAPI)=>{
+    async ({id}, thunkAPI)=>{
         try {
             const {data} = await ordersService.getAllComments(id);
+            return data
+        }catch (e) {
+            return thunkAPI.rejectWithValue(e.response.data);
+        }
+    }
+);
+
+const postComments = createAsyncThunk (
+    "carSlice/postComments",
+    async ({id, comment}, thunkAPI)=>{
+        try {
+            const {data} = await ordersService.postComments(id, comment);
             return data
         }catch (e) {
             return thunkAPI.rejectWithValue(e.response.data);
@@ -39,9 +63,12 @@ const ordersSlice = createSlice({
         [getAll.fulfilled]: (state, action)=>{
             state.orders = action.payload
         },
-            [getAllComments.fulfilled]: (state, action)=>{
+        [getAllComments.fulfilled]: (state, action)=>{
             state.comments = action.payload
-            }
+        },
+        [postComments.rejected]: (state, action)=>{
+            state.errors = action.payload
+        },
     }
     })
 
@@ -49,7 +76,9 @@ const {reducer: ordersReducer} = ordersSlice;
 
 const ordersAction = {
     getAll,
-    getAllComments
+    getAllComments,
+    postComments,
+    updateOrder
 }
 export {
     ordersReducer,

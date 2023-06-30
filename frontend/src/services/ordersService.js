@@ -1,17 +1,20 @@
-import axios from "axios";
 import {urlsOrders} from "../configs";
+import {axiosService} from "./axiosService";
 
 const ordersService =  {
     getBySearch: (page=1,name, surname, email, phone, age, course, course_format, course_type, status,groups
-    )=> axios.get(urlsOrders.orders.getAll,
+    )=> axiosService.get(urlsOrders.orders.getAll,
         {params:{page,'filter.name':name,'filter.surname':surname, 'filter.email':email,
                 'filter.phone':phone,'filter.age':age, 'filter.course':course,'filter.course_format':course_format,
                 'filter.course_type':course_type,'filter.status':status, 'filter.group':groups,
         }}),
 
-    getAll: (page= 1, query, filt)=> axios.get(urlsOrders.orders.getAll, {params:{page, sortBy: query, filt}}),
+    getAll: (page= 1, query, filt)=> axiosService.get(urlsOrders.orders.getAll, {params:{page, sortBy: query, filt}}),
 
-    getAllComments: (id)=> axios.get(urlsOrders.orders.getAllComments(id))
+    getAllComments: (id)=> axiosService.get(urlsOrders.orders.getAllComments(id)),
+    postComments: (id, comment) =>axiosService.post(urlsOrders.orders.postComments(id), comment),
+
+    updateOrder: (id, value)=> axiosService.patch(urlsOrders.orders.updateOrder(id), value),
 
 }
 export {

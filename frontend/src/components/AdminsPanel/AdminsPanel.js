@@ -2,55 +2,33 @@ import css from './AdminPanel.module.css'
 import {AdminPanel} from "../AdminPanel/AdminPanel";
 import {useEffect, useState} from "react";
 import {ModalCreate} from "../ModalCreate/ModalCreate";
+import {useDispatch, useSelector} from "react-redux";
+import {managerAction} from "../../redux/slices/manager.slice";
+import {Loader} from "../Loader/Loader";
 
 const AdminsPanel = () => {
-    const arr = [
-        {id: 99,
-            email: 'lika@kika.com',
-            name: 'Gogol',
-            surname: 'Mogol',
-            is_active: 'true',
-            last_login: null
-        },
-        {id: 98,
-            email: 'lika@kika.com',
-            name: 'Gogol',
-            surname: 'Mogol',
-            is_active: 'true',
-            last_login: null
-        },
-        {id: 97,
-            email: 'lika@kika.com',
-            name: 'Gogol',
-            surname: 'Mogol',
-            is_active: 'true',
-            last_login: null
-        },
-        {id: 96,
-            email: 'lika@kika.com',
-            name: 'Gogol',
-            surname: 'Mogol',
-            is_active: 'true',
-            last_login: null
-        },
-        {id: 95,
-            email: 'lika@kika.com',
-            name: 'Gogol',
-            surname: 'Mogol',
-            is_active: 'true',
-            last_login: null
-        },
-    ];
+
     const [length, setLength] = useState(0);
     const [modalActive, setModalActive] = useState(false);
+    const [loader, setLoader] = useState(true);
+
+    const dispatch = useDispatch();
+    
+    const {managers} = useSelector(state => state.managers)
 
     useEffect(() => {
-        setLength(arr.length)
-    }, [arr])
+        setLoader(true)
+        dispatch(managerAction.getManagers());
+        
+        setLength(managers.length);
+        setTimeout(()=>setLoader(false), 1000)
+    }, [dispatch])
 
     return (
         <div className={css.box}>
+
             <div className={css.adminPanelBox}>
+
                 <div className={css.ordersBox}>
                     <h3 className={css.order}>Orders statistic</h3>
                 </div>
@@ -73,7 +51,11 @@ const AdminsPanel = () => {
                 <ModalCreate active={modalActive} setModalActive={setModalActive}/>
 
                 <div>
-                    {arr.map((manager )=> <AdminPanel  key={manager.id} arr={arr} length={length} manager={manager}/>)}
+                    {
+                        loader
+                            ?<div className={css.boxLoader}><Loader/></div>
+                        : managers && managers.map((manager )=> <AdminPanel  key={manager.id} length={length} manager={manager}/>)
+                    }
                 </div>
 
             </div>

@@ -8,12 +8,14 @@ import css from './Users.module.css'
 import {ordersAction} from "../../redux/slices/orders.slice";
 import {User} from "../User/User";
 import {BlogFilter} from "../BlogFilter/BlogFilter";
+import {groupAction} from "../../redux/slices/group.slice";
+import {Loader} from "../Loader/Loader";
 
 const Users = () => {
 
      const location = useLocation();
 
-    const [page, setPage] = useState(parseInt(location.search?.split('')[6] || 1));
+    const [page, setPage] = useState(parseInt(location.search?.split('=')[1]?.split('&')[0] || 1));
     const [name, setName] = useState( location.search?.split('=')[2]?.split('+') || null)
 
     const [order, setOrder] = useState([])
@@ -23,7 +25,13 @@ const Users = () => {
     const dispatch = useDispatch();
     const {orders} = useSelector(state => state.orders);
 
-    const [searchByName, setSearchByName] = useState(true);
+    const [searchByName, setSearchByName] = useState(true );
+    const [loader, setLoader] = useState(true );
+
+
+    const [search, setSearch] = useState('' );
+
+
     const [searchParams, setSearchParams] = useSearchParams();
 
     const nameQuery = searchParams.get('name') || '';
@@ -37,25 +45,41 @@ const Users = () => {
     const statusQuery = searchParams.get('status') || '';
     const groupsQuery = searchParams.get('groups') || '';
 
-
     useEffect(() => {
-        dispatch(ordersAction.getAll({page}));
+        setLoader(true);
 
-        setPageQty(orders.totalPages)
+        dispatch(groupAction.getGroups());
+        setPageQty(orders.totalPages);
 
-        if (name !== null){
+        setTimeout(()=>setLoader(false), 1000);
+
+
+
+        if (search !== ''){
+        dispatch(ordersAction.getAll({page, query: search}));
+        const arg = search.split(':');
+
+        setSearchParams({page: page, sortBy: `${arg[0]} ${arg[1]}`});
+
+
+    }else if(name !== null){
+
             if (name[1]==='asc' || name[1]==='desc'){
-                console.log(name)
 
                 dispatch(ordersAction.getAll({page, query: `${name[0]}:${name[1]}` }));
+                setSearchParams({page: page, sortBy: `${name[0]} ${name[1]}`});
+
             }
 
-        }
+    } else if (search === ''){
+
+            dispatch(ordersAction.getAll({page}));
+
+    }
 
     }, [dispatch, orders.limit, orders.totalPages, page])
 
-    console.log(order);
-    console.log(order.length<1);
+    console.log(orders);
     const sortByName = async (word) => {
 
         if (!searchByName){
@@ -65,11 +89,17 @@ const Users = () => {
             setSearchByName(true)
 
             dispatch(ordersAction.getAll({page, query: `${word}:asc` }));
+
+            setSearch(`${word}:asc`);
+
             setSearchParams({page: page, sortBy: `${word} asc` });
 
         }else {
 
             setSearchParams({page: page, sortBy: `${word} desc`});
+
+            setSearch(`${word}:desc`);
+
             dispatch(ordersAction.getAll({page, query: `${word}:desc` }));
 
             setSearchByName(false);
@@ -82,7 +112,8 @@ const Users = () => {
     const reset = async () => {
         setOrder([]);
         setSearchParams({page});
-
+        setSearch('');
+        setName(null)
        await dispatch(ordersAction.getAll({page }));
 
     }
@@ -95,7 +126,8 @@ const Users = () => {
                     <div className={css.boxBiReset} onClick={()=>reset()}><BiReset className={css.BiReset}/></div>
 
                     <div className={css.headBoxSearch}>
-                        <BlogFilter page={page}
+                        <BlogFilter
+                                    page={page}
                                     setOrder={setOrder}
                                     nameQuery={nameQuery}
                                     setSearchParams={setSearchParams}
@@ -132,7 +164,9 @@ const Users = () => {
                             <div onClick={()=>sortByName('manager')} className={css.all}>manager</div>
 
                         </div>
-                        {order.length<1 ? orders.data && orders.data.map(order => <User key={order.id} order={order}/>)
+                        { loader
+                            ?<div className={css.boxLoader}><Loader/></div>
+                            :order.length<1 ? orders.data && orders.data.map(order => <User page={page} search={search} nameQur={name} key={order.id} order={order}/>)
                         //     .filter(order =>
                         //     order.name.includes(nameQuery)
                         //     && order.surname.includes(surnameQuery)
@@ -145,10 +179,12 @@ const Users = () => {
                         //     && !ageQuery.length || order.age === +ageQuery && order.name.includes(nameQuery) && order.surname.includes(surnameQuery) && order.email.includes(emailQuery) && order.phone.includes(phoneQuery) && order.course.includes(courseQuery) && order.course_format.includes(course_formatQuery)
                         //
                         // )
-                            :order.length>=1 && order.map(orde => <User key={orde.id} order={orde}/>)}
+                            :order.length>=1 && order.map(orde => <User page={page} search={search} nameQur={name} key={orde.id} order={orde}/>)}
                     </div>
                     {order.length<1
-                        ? <div className={css.conteiner}>
+                        ? loader
+                            ?<div className={css.boxLoader}><Loader/></div>
+                            : <div className={css.conteiner}>
                             <Container>
                                 <Stack spacing={2}>
                                     {
@@ -163,7 +199,6 @@ const Users = () => {
                                                 (item) =>(
                                                     <PaginationItem
                                                         component={Link}
-
                                                         to={`/orders?page=${item.page}`}
                                                         {...item}
                                                     />

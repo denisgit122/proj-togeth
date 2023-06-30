@@ -1,23 +1,27 @@
 import Headroom from 'react-headroom'
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {CiLogout} from 'react-icons/ci'
 import {ImCogs} from 'react-icons/im'
-import {useDispatch} from "react-redux";
 
 import css from './Header.module.css';
 import img from '../img/img.png'
 
 const Header = () => {
-    const dispatch = useDispatch()
+    const navigate = useNavigate();
 
     const logOut = () => {
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+        navigate('/')
 
     }
     return (
         <div className={css.headBox}>
+
             <Headroom className={css.headroom}>
                 <header className={css.header}>
-                    <NavLink to={'/'}>
+
+                    <NavLink to={"/orders"}>
                         <img className={css.logo} src={img} alt="Logo"/>
                     </NavLink>
                     <div>
@@ -31,6 +35,7 @@ const Header = () => {
 
                 </header>
             </Headroom>
+
         </div>
 
 

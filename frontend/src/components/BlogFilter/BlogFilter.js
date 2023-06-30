@@ -1,7 +1,8 @@
 import {useState} from "react";
 
 import css from './BlogFilter.module.css'
-import {ordersService} from "../../services/ordersService";
+import {ordersService} from "../../services";
+import {useSelector} from "react-redux";
 
 const BlogFilter = ({ setOrder,
                         page, setSearchParams,nameQuery,surnameQuery, emailQuery, phoneQuery, ageQuery,
@@ -18,12 +19,12 @@ const BlogFilter = ({ setOrder,
     const [searchByStatus, setSearchByStatus] = useState(statusQuery);
     const [searchByGroups, setSearchByGroups] = useState(groupsQuery);
 
+    const {groups} = useSelector(state => state.groups)
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         const form = e.target;
-
 
         const queryName = form.name.value;
         const querySurname = form.surname.value;
@@ -54,7 +55,7 @@ const BlogFilter = ({ setOrder,
             params.course_format, params.course_type, params.status, params.groups
 
         ).then(({data})=> setOrder(data.data))
-        console.log(params);
+
         setSearchParams(params)
     }
 return (
@@ -108,8 +109,9 @@ return (
 
              <select name="groups" value={searchByGroups} onChange={e => setSearchByGroups(e.target.value)}>
                  <option value="">all groups</option>
-                 <option value="sep-2023">sep-2023</option>
-
+                 {
+                     groups.map(group => <option value={group.name} key={group.id}>{group.name}</option>)
+                 }
              </select>
          </div>
 
