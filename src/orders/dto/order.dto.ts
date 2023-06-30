@@ -11,10 +11,8 @@ import {
   Min,
 } from 'class-validator';
 import { ECourse, ECourse_format, ECourse_type, EStatus } from '../interface';
-import { Transform } from 'class-transformer';
-import { LowercaseEmail } from 'src/core';
 
-export class UpdateOrdersDto {
+export class UpdateOrderDto {
   @ApiProperty({ example: 'Max' })
   @IsOptional()
   @Length(2, 25)
@@ -31,7 +29,6 @@ export class UpdateOrdersDto {
   @IsOptional()
   @IsEmail()
   @IsString()
-  @Transform(({ value }) => new LowercaseEmail(value).toString())
   email?: string;
 
   @ApiProperty({ example: '+380991568912' })
@@ -98,7 +95,7 @@ export class UpdateOrdersDto {
 
 export class AddCommentDto {
   @ApiProperty({ example: 'Hello World!' })
-  @Length(2, 100)
+  @Length(2, 300)
   @IsString()
   comment: string;
 }

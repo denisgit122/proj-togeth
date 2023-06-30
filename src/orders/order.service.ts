@@ -2,24 +2,22 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Comment, Group, Order } from '@prisma/client';
 import { PrismaService } from '../core';
 import { PaginateQuery } from 'nestjs-paginate';
-import { UpdateOrdersDto } from './dto';
-import { OrdersEntity } from './orders.entity';
+import {AddCommentDto, CreateGroupDto, UpdateOrderDto} from './dto';
+import { OrderEntity } from './order.entity';
 import {
   EStatus,
-  IComment,
   ICustomPaginated,
-  IGroup,
   IStatistic,
 } from './interface';
 import * as moment from 'moment';
 
 @Injectable()
-export class OrdersService {
+export class OrderService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getOrdersList(
     query?: PaginateQuery,
-  ): Promise<ICustomPaginated<OrdersEntity>> {
+  ): Promise<ICustomPaginated<OrderEntity>> {
     const { page = 1, limit = 25, sortBy = [['id', 'desc']], filter } = query;
 
     const skip = (page - 1) * limit;
@@ -120,19 +118,21 @@ export class OrdersService {
     });
   }
 
-  async editOrderById(orderId: string, orderData: UpdateOrdersDto) {
+  async editOrderById(orderId: string, orderData: UpdateOrderDto) {
     const order = await this.getOrderById(orderId);
     let group;
 
     if (orderData.group) {
       group = await this.checkGroup(orderData.group);
+      if (!group) {
+        throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
+      }
     }
 
     if (order && order.manager === null) {
-      const updateData: UpdateOrdersDto = {
+      const updateData: UpdateOrderDto = {
         name: orderData.name,
         surname: orderData.surname,
-        email: orderData.email,
         phone: orderData.phone,
         age: orderData.age,
         course: orderData.course,
@@ -143,6 +143,20 @@ export class OrdersService {
         already_paid: orderData.already_paid,
         manager: orderData.manager,
       };
+
+      if (orderData.email) {
+        const normalizedEmail = orderData.email.toLowerCase();
+        const email = await this.getOrderByEmail(normalizedEmail);
+
+        if (!email) {
+          updateData.email = normalizedEmail;
+        } else {
+          throw new HttpException(
+            'Email is already in use.',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      }
 
       if (group) {
         updateData.group = group.name;
@@ -157,7 +171,7 @@ export class OrdersService {
 
   async addComment(
     orderId: string,
-    data: IComment,
+    data: AddCommentDto,
     user: any,
   ): Promise<Comment | HttpException> {
     const order = await this.checkOrder(orderId);
@@ -196,7 +210,7 @@ export class OrdersService {
     return order;
   }
 
-  async createGroup(newGroup: IGroup): Promise<Group> {
+  async createGroup(newGroup: CreateGroupDto): Promise<Group> {
     const group = await this.checkGroup(newGroup.name);
 
     if (!group) {
@@ -232,7 +246,7 @@ export class OrdersService {
     return this.prismaService.group.findMany();
   }
 
-  async countOrders(argument?: Partial<OrdersEntity>): Promise<number> {
+  async countOrders(argument?: Partial<OrderEntity>): Promise<number> {
     const where: any = argument ? { ...argument } : {};
 
     return this.prismaService.order.count({ where });

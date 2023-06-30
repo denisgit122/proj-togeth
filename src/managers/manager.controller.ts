@@ -10,23 +10,23 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Param,
+  Param, Patch,
   Post,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ManagersService } from './managers.service';
-import { CreateManagersDto } from './dto';
+import { ManagerService } from './manager.service';
+import {CreateManagerDto, UpdateManagerDto} from './dto';
 import { TrimPipe } from '../core';
-import { AuthGuard } from '@nestjs/passport';
+import { AdminAuthGuard } from '../admin';
 
 @ApiTags('Managers')
 @Controller('managers')
-@UseGuards(AuthGuard('access'))
+@UseGuards(AdminAuthGuard)
 @ApiBearerAuth()
-export class ManagersController {
-  constructor(private readonly managersService: ManagersService) {}
+export class ManagerController {
+  constructor(private readonly managerService: ManagerService) {}
 
   @Get()
   @ApiResponse({ status: 200, description: 'OK' })
@@ -34,21 +34,21 @@ export class ManagersController {
   async getManagersList(@Req() req: any, @Res() res: any) {
     return res
       .status(HttpStatus.OK)
-      .json(await this.managersService.getManagersList());
+      .json(await this.managerService.getManagersList());
   }
 
   @ApiResponse({ status: 200, description: 'OK' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiBody({ type: CreateManagersDto })
+  @ApiBody({ type: CreateManagerDto })
   @Post('create')
   async createManager(
     @Req() req: any,
     @Res() res: any,
-    @Body(new TrimPipe()) body: CreateManagersDto,
+    @Body(new TrimPipe()) body: CreateManagerDto,
   ) {
     return res
       .status(HttpStatus.OK)
-      .json(await this.managersService.createManager(body));
+      .json(await this.managerService.createManager(body));
   }
 
   @ApiParam({ name: 'managerId', required: true })
@@ -62,6 +62,22 @@ export class ManagersController {
   ) {
     return res
       .status(HttpStatus.OK)
-      .json(await this.managersService.getManagerById(managerId));
+      .json(await this.managerService.getManagerByIdOrEmail(managerId));
+  }
+
+  @ApiParam({ name: 'managerId', required: true })
+  @ApiResponse({ status: 200, description: 'OK' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiBody({ type: UpdateManagerDto })
+  @Patch(':managerId')
+  async updateManager(
+      @Req() req: any,
+      @Res() res: any,
+      @Body(new TrimPipe()) body: UpdateManagerDto,
+      @Param('managerId') managerId: string,
+  ) {
+    return res
+        .status(HttpStatus.OK)
+        .json(await this.managerService.updateManager(managerId, body));
   }
 }
