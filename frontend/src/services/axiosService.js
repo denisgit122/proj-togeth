@@ -1,8 +1,11 @@
 import axios from "axios"
+import {createBrowserHistory} from "history";
+
 import {baseURL} from "../configs";
 import {authService} from "./authService";
 
 const axiosService = axios.create({baseURL});
+const history = createBrowserHistory();
 
 axiosService.interceptors.request.use((config)=>{
     if (authService.isAuthenticated()) {
@@ -20,25 +23,29 @@ axiosService.interceptors.response.use(config=>{
     },
     async (error)=>{
 
-        let orRequest = error.config;
+        const refresh = authService.getRefreshToken();
 
-        if (error.response?.status === 401 && !isRefreshing){
+
+        if (error.response?.status === 401 && refresh&& !isRefreshing){
             isRefreshing = true
             try {
                 await authService.refresh();
-
-                return axiosService(orRequest);
+                // return axiosService(error.config);
 
             }catch (e) {
 
-                // authService.deletesToken();
-                return Promise.reject(error);
+                authService.deletesToken();
+                history.replace('/')
+                // return Promise.reject(error);
             }
+            isRefreshing = false;
+            return axiosService(error.config)
         }
         return Promise.reject(error);
 
     }
 )
 export {
-    axiosService
+    axiosService,
+    history
 }

@@ -1,9 +1,9 @@
-import {urlsAuth} from "../configs";
+import {baseURL, urlsAuth} from "../configs";
 import {axiosService} from "./axiosService";
-
 
 const accessToken = "access";
 const refreshToken = "refresh";
+
 const authService = {
 
   login: async function (data){
@@ -15,21 +15,39 @@ const authService = {
    return response;
   },
 
-    refresh: async function() {
+     refresh: async function() {
       const refreshTok = this.getRefreshToken();
+
+
       if (!refreshTok){
           throw new Error("Refresh token isn't exist")
       }
-        console.log(13)
-        let {data} = await axiosService.post(urlsAuth.auth.refresh );
-        console.log(14)
-        console.log(data)
-        this.setTokens(data)
 
-    },
+    const url = baseURL + '/auth/refresh';
+
+   await fetch(url, {
+          method: "POST",
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': refreshTok
+          },
+      }).then((response)=>{
+       if (response.status === 200){
+
+           return response.json();
+
+       }else if (response.status === 401){
+
+           this.deletesToken();
+       }
+      }).then((data)=> this.setTokens(data))
+         // const data = await axiosService.post('/auth/refresh' , {},{headers:{Authorization: refreshTok}});
+
+     },
 
 
   setTokens:({tokenPair})=>{
+
       localStorage.setItem(accessToken, tokenPair.accessToken )
       localStorage.setItem(refreshToken,tokenPair.refreshToken )
 
@@ -42,7 +60,11 @@ const authService = {
     localStorage.removeItem(refreshToken)
 
   },
-  isAuthenticated:()=> !!localStorage.getItem(accessToken)
+  isAuthenticated:()=> !!localStorage.getItem(accessToken),
+
+  forgotPassword:(email)=> axiosService.post(urlsAuth.auth.forgotPassword, email),
+
+  forgotPasswordPut:(token,password)=> axiosService.put(urlsAuth.auth.forgotPassword, { password},{params:{token}}),
 
 }
 export {

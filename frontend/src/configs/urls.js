@@ -3,7 +3,8 @@ const baseURL = "http://localhost:3200"
 const urlsAuth ={
         auth:{
           login: '/auth/login',
-          refresh :'/auth/refresh'
+          refresh : '/auth/refresh',
+          forgotPassword: `/auth/forgot/password`,
         }
 
 }
@@ -25,7 +26,9 @@ const urlsGroup = {
 }
 const urlsManager = {
     manager:{
-        gerAll: '/managers'
+        gerAll: '/managers',
+        create: '/managers/create',
+        update:(id)=> `/managers/${id}`,
     }
 }
 export {urlsAuth, urlsOrders, urlsGroup, urlsManager, baseURL}

@@ -109,8 +109,14 @@
 
 .copied{
     position: absolute;
+    display: flex;
     margin: 10px 0 0 30px;
+    font-size: 1.3vw;
+    color: darkgrey;
+    font-family: "Agency FB";
 }
-.boxButton{
-
+.forgotPass{
+    margin-left: .6vw;
+    color: #03e9f4;
+    cursor: pointer;
 }

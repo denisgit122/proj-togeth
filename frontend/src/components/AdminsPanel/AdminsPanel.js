@@ -14,7 +14,12 @@ const AdminsPanel = () => {
 
     const dispatch = useDispatch();
     
-    const {managers} = useSelector(state => state.managers)
+    const {managers} = useSelector(state => state.managers);
+
+    const banned = managers.filter(manager => manager.status === "banned");
+    const unbanned = managers.filter(manager => manager.status === "unbanned");
+    const is_activeFalse = managers.filter(manager => manager.is_active === false);
+    const is_activeTrue = managers.filter(manager => manager.is_active === true);
 
     useEffect(() => {
         setLoader(true)
@@ -39,11 +44,11 @@ const AdminsPanel = () => {
                     </div>
 
                     <div className={css.totalBox}>
-                        <div className={css.total}>total:{length}</div>
-                        <div className={css.total}>In work:{length}</div>
-                        <div className={css.total}>null:{length}</div>
-                        <div className={css.total}>Agree:{length}</div>
-                        <div className={css.total}>Disagree:{length}</div>
+                        <div className={css.total}>total: {length}</div>
+                        <div className={css.total}>Banned: {banned.length}</div>
+                        <div className={css.total}>Unbanned: {unbanned.length}</div>
+                        <div className={css.total}>Is active: {is_activeFalse.length}False</div>
+                        <div className={css.total}>Is active: {is_activeTrue.length}True</div>
                     </div>
 
                 </div>

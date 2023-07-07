@@ -8,7 +8,7 @@ const managerValidator = Joi.object({
         "string.min": "min 2 letters",
         "string.max": "max 17 letters",
     }),
-    surName: Joi.string().min(2).max(17).required().messages({
+    surname: Joi.string().min(2).max(17).required().messages({
         "string.min": "min 2 letters",
         "string.max": "max 17 letters",
     })

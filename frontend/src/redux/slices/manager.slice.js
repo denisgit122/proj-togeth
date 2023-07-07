@@ -22,6 +22,32 @@ const getManagers = createAsyncThunk(
     }
 
 )
+const createManager = createAsyncThunk(
+    "managerSlice/createManager",
+    async ({...manager},thunkAPI ) => {
+        try {
+            const {data} = await managerService.create(manager);
+            thunkAPI.dispatch(getManagers());
+
+            return data;
+        }catch (e) {
+            return thunkAPI.rejectWithValue(e.response.data);
+        }
+    }
+)
+const updateManager = createAsyncThunk(
+    "managerSlice/updateManager",
+    async ({id, manager},thunkAPI ) => {
+        try {
+            const {data} = await managerService.update(id, manager);
+            thunkAPI.dispatch(getManagers());
+
+            return data;
+        }catch (e) {
+            return thunkAPI.rejectWithValue(e.response.data);
+        }
+    }
+)
 
 const managerSlice = createSlice({
     name: "managerSlice",
@@ -39,7 +65,8 @@ const {reducer: managerReducer} = managerSlice;
 
 const managerAction = {
     getManagers,
-
+    createManager,
+    updateManager,
 }
 export {
     managerReducer,

@@ -1,12 +1,8 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
-import { PasswordService, PrismaService } from "../core";
-import {Manager} from '@prisma/client';
-import {CreateManagerDto, UpdateManagerDto} from './dto';
-import {isEmail} from "class-validator";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { PasswordService, PrismaService } from '../core';
+import { Manager } from '@prisma/client';
+import { CreateManagerDto, UpdateManagerDto } from './dto';
+import { isEmail } from 'class-validator';
 
 @Injectable()
 export class ManagerService {
@@ -73,7 +69,7 @@ export class ManagerService {
       status: managerData.status,
       is_active: managerData.is_active,
       last_login: managerData.last_login,
-    }
+    };
 
     if (password) {
       updateData.password = password;

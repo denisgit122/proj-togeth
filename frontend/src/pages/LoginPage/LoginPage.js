@@ -6,6 +6,8 @@ import {useNavigate} from "react-router-dom";
 import {loginValidator} from "../../validators";
 import {useState} from "react";
 import {authService} from "../../services";
+import {managerAction} from "../../redux/slices/manager.slice";
+import {useDispatch, useSelector} from "react-redux";
 
 const LoginPage = () => {
     const {handleSubmit, register, reset, formState:{errors, isValid} } = useForm(
@@ -17,11 +19,14 @@ const LoginPage = () => {
     const navigate = useNavigate();
 
     const login = async (cred) => {
+
         try {
 
             await authService.login(cred);
             if (cred.email === 'admin@gmail.com'){
                 navigate("/orders")
+            } else {
+                navigate("/manager")
             }
 
 

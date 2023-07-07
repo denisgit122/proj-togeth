@@ -11,7 +11,7 @@ import {BlogFilter} from "../BlogFilter/BlogFilter";
 import {groupAction} from "../../redux/slices/group.slice";
 import {Loader} from "../Loader/Loader";
 
-const Users = () => {
+const UsersManager = () => {
 
      const location = useLocation();
 
@@ -198,7 +198,7 @@ const Users = () => {
                                                 (item) =>(
                                                     <PaginationItem
                                                         component={Link}
-                                                        to={`/orders?page=${item.page}`}
+                                                        to={`/manager?page=${item.page}`}
                                                         {...item}
                                                     />
                                                 )
@@ -222,4 +222,4 @@ const Users = () => {
     );
 };
 
-export {Users};
+export {UsersManager};

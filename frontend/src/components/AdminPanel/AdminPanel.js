@@ -2,25 +2,53 @@ import css from './AdminPanel.module.css';
 import {useState} from "react";
 import {ManagerDescription} from "../Admin/ManagerDescription/ManagerDescription";
 import {ButtonAdmin} from "../Admin/ButtonAdmin/ButtonAdmin";
+import {useDispatch} from "react-redux";
+import {managerAction} from "../../redux/slices/manager.slice";
+import {useNavigate} from "react-router-dom";
+import {authAction} from "../../redux/slices/auth.slice";
 
 const AdminPanel = ({manager}) => {
 
     const [active, setActive] = useState(true);
     const [cop, setCoty] = useState(false);
 
-    const copy = () => {
-        navigator.clipboard.writeText('http://bigbird.space/activate/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWN0aXZhdGUiLCJleHAiOjE2ODU1NjIwNjksImlhdCI6MTY4NTU2MTQ2OSwianRpIjoiNWM3NDJlNzk2ODFlNDRjNDg1MDk1NzdmOGViMTY5NjAiLCJ1c2VyX2lkIjoxMDB9.1w6anikxTnVBzeYwaXIV9p1wGlmQcPcrjMcHdZcAZzY')
-            .then(()=> setCoty(true))
-    }
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    if (cop){
-        setTimeout(args =>{
-            setCoty(false)
-        }, 3000)
-    }
+    const addPassword = () => {
 
+        if (manager.password === null) {
+            navigate(`/adminPanel/${manager.id.toString()}`)
+        } else {
+            setCoty(true)
+
+            setTimeout(() => {
+                setCoty(false)
+            }, 3000)
+        }
+    }
+    const ban = () => {
+        if (manager.status === "unbanned"){
+
+            dispatch(managerAction.updateManager({id: manager.id, manager: {status: "banned", is_active: false}}))
+        }
+
+    };
+
+    const unban = () => {
+        if (manager.status === "banned"){
+
+            dispatch(managerAction.updateManager({id: manager.id, manager: {status: "unbanned", is_active: true}}))
+        }
+
+    };
+    const forgotPass = () => {
+        dispatch(authAction.forgotPassword({email: manager.email}))
+        alert('We have send you a confirmation email');
+    }
     return (
         <div className={css.headBox}>
+
             {active
                 ?
                 <div className={css.box }>
@@ -31,14 +59,24 @@ const AdminPanel = ({manager}) => {
                 </div>
                 :
                 <div className={css.boxFalse}>
+
                     <ManagerDescription manager={manager}/>
                     <div className={css.lieFalse}></div>
 
                     <div className={css.boxButton}>
-                        <button onClick={event => copy()} className={css.button}>RECOVERY PASSWORD</button>
-                        {cop ? <span className={css.copied}>copied successfully</span> : <></>}
-                        <button className={css.button}>BAN</button>
-                        <button className={css.button}>ANBUN</button>
+
+                        <button onClick={() => addPassword()} className={css.button}>ADD PASSWORD</button>
+
+                        {cop
+                            ? <div className={css.copied}>
+                                <div >This manager has a password </div>,
+                                <div onClick={()=>forgotPass()} className={css.forgotPass}>Forgot password</div>
+                              </div>
+                            : <></>}
+
+                        <button onClick={()=>ban()} className={css.button}>BAN</button>
+                        <button onClick={()=>unban()} className={css.button}>ANBUN</button>
+
                     </div>
 
                     <div className={css.lie && css.lieFalse2}></div>

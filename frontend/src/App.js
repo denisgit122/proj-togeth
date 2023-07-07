@@ -1,7 +1,9 @@
 import {Routes, Route, Navigate} from 'react-router-dom'
 
-import {AdminPanelPage, LoginPage, NotFoundPage, UserPage} from "./pages";
+import {AdminPanelPage, ForgotPasswordPage, LoginPage, NotFoundPage, UserPage, UserPageManager} from "./pages";
 import {HeaderLayots} from "./layouts/HeaderLayots/HeaderLayots";
+import {AddPasswordPage} from "./pages/AddPasswordPage/AddPasswordPage";
+import {HeaderLayotsManager} from "./layouts";
 
 function App() {
 
@@ -20,8 +22,16 @@ function App() {
                 <Route element={<HeaderLayots/>}>
                     <Route path={"/orders"} element={<UserPage/>}/>
                     <Route path={"/adminPanel"} element={<AdminPanelPage/>}/>
+                    <Route path={"/adminPanel/:id"} element={<AddPasswordPage/>}/>
 
                 </Route>
+
+                <Route element={<HeaderLayotsManager/>}>
+                    <Route path={"/manager"} element={<UserPageManager/>}/>
+                </Route>
+
+
+                <Route path={"/forgot/password"} element={<ForgotPasswordPage/>}/>
 
                 <Route path={'*'} element={<NotFoundPage/>}/>
 

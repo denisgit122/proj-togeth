@@ -1,9 +1,20 @@
-import {BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException} from '@nestjs/common';
-import {Manager} from '@prisma/client';
-import {AdminService} from '../admin';
-import {ChangePasswordDto, LoginDto} from './dto';
-import {EActionTokenType, MailService, PasswordService, TokenService} from '../core';
-import {EStatusManager, ManagerService} from '../managers';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Manager } from '@prisma/client';
+import { AdminService } from '../admin';
+import { ChangePasswordDto, LoginDto } from './dto';
+import {
+  EActionTokenType,
+  MailService,
+  PasswordService,
+  TokenService,
+} from '../core';
+import { EStatusManager, ManagerService } from '../managers';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +23,7 @@ export class AuthService {
     private readonly mailService: MailService,
     private readonly passwordService: PasswordService,
     private readonly managerService: ManagerService,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -26,11 +37,15 @@ export class AuthService {
       user = admin;
     } else if (manager && manager.status === EStatusManager.UNBANNED) {
       user = manager;
-      await this.managerService.updateManager(manager.id, {last_login: new Date()});
+      await this.managerService.updateManager(manager.id, {
+        last_login: new Date(),
+      });
     } else if (manager && manager.status === EStatusManager.BANNED) {
-      throw new HttpException('You cannot log in because your account is banned', HttpStatus.FORBIDDEN)
-    }
-    else {
+      throw new HttpException(
+        'You cannot log in because your account is banned',
+        HttpStatus.FORBIDDEN,
+      );
+    } else {
       throw new UnauthorizedException('Email or password is incorrect');
     }
 
@@ -47,30 +62,7 @@ export class AuthService {
       throw new UnauthorizedException('Email or password is incorrect');
     }
 
-<<<<<<< HEAD
-    const accessToken = await this.jwtService.sign(
-      { id: admin.id, strategy: 'access' },
-      {
-        expiresIn: '1m',
-        secret: process.env.SECRET_ACCESS_WORD,
-      },
-    );
-
-    const refreshToken = await this.jwtService.sign(
-      { id: admin.id, strategy: 'refresh' },
-      {
-        expiresIn: '20m',
-        secret: process.env.SECRET_REFRESH_WORD,
-      },
-    );
-
-    return {
-      accessToken: `Bearer ${accessToken}`,
-      refreshToken: `Bearer ${refreshToken}`,
-    };
-=======
     return this.tokenService.generateTokenPair(user.id);
->>>>>>> c6bdc94d245d520ba4733aaf7659bfed21a03130
   }
 
   async refresh(id: string) {
@@ -81,49 +73,68 @@ export class AuthService {
     const manager = await this.managerService.getManagerByIdOrEmail(email);
 
     if (manager.is_active === true) {
-      throw new HttpException('Your account is already active', HttpStatus.CONFLICT);
+      throw new HttpException(
+        'Your account is already active',
+        HttpStatus.CONFLICT,
+      );
     }
 
     if (manager.status === EStatusManager.BANNED) {
       throw new HttpException('Your account is banned', HttpStatus.CONFLICT);
     }
 
-    const activateToken = await this.tokenService.generateActionToken(manager.id, EActionTokenType.activate)
+    const activateToken = await this.tokenService.generateActionToken(
+      manager.id,
+      EActionTokenType.activate,
+    );
 
     await this.mailService.sendManagerActivate(manager, activateToken);
   }
 
   async activate(id: string, password: string): Promise<Manager> {
-    return this.managerService.updateManager(id, {password, is_active: true});
+    return this.managerService.updateManager(id, { password, is_active: true });
   }
 
   async changePassword(body: ChangePasswordDto, id: string): Promise<void> {
     const manager = await this.managerService.getManagerByIdOrEmail(id);
 
-    const isMatched = await this.passwordService.comparePasswords(body.oldPassword, manager.password);
+    const isMatched = await this.passwordService.comparePasswords(
+      body.oldPassword,
+      manager.password,
+    );
 
     if (!isMatched) {
       throw new UnauthorizedException('Wrong old password!');
     }
 
     if (body.oldPassword === body.newPassword) {
-      throw new BadRequestException('New password must be different from the old password');
+      throw new BadRequestException(
+        'New password must be different from the old password',
+      );
     }
 
-    const hashedPassword = await this.passwordService.hashPassword(body.newPassword);
+    const hashedPassword = await this.passwordService.hashPassword(
+      body.newPassword,
+    );
 
-    await this.managerService.updateManager(id, {password: hashedPassword});
+    await this.managerService.updateManager(id, { password: hashedPassword });
   }
 
   async sendForgotPasswordToken(email: string): Promise<void> {
     const manager = await this.managerService.getManagerByIdOrEmail(email);
 
-    const forgotPasswordToken = await this.tokenService.generateActionToken(manager.id, EActionTokenType.forgot);
+    const forgotPasswordToken = await this.tokenService.generateActionToken(
+      manager.id,
+      EActionTokenType.forgot,
+    );
 
-    await this.mailService.sendManagerForgotPassword(manager, forgotPasswordToken);
+    await this.mailService.sendManagerForgotPassword(
+      manager,
+      forgotPasswordToken,
+    );
   }
 
   async setForgotPassword(id: string, password: string): Promise<Manager> {
-    return this.managerService.updateManager(id, {password});
+    return this.managerService.updateManager(id, { password });
   }
 }

@@ -2,13 +2,20 @@ import './ModalCreate.css'
 import {useForm} from "react-hook-form";
 import {joiResolver} from "@hookform/resolvers/joi";
 import {managerValidator} from "../../validators";
+import {useDispatch} from "react-redux";
+import {managerAction} from "../../redux/slices/manager.slice";
 
 const ModalCreate = ({active,setModalActive}) => {
 
     const {reset, register, handleSubmit, formState:{errors, isValid}} = useForm(
         {mode:"all", resolver: joiResolver(managerValidator)}
-    )
-    const create = (data) =>{
+    );
+
+    const dispatch = useDispatch();
+
+    const create = (manager) =>{
+        console.log(manager);
+        dispatch(managerAction.createManager(manager))
         setModalActive(false)
         reset()
     }
@@ -31,7 +38,7 @@ const ModalCreate = ({active,setModalActive}) => {
                     />
                     <input
                         className={ errors.surName? "erInp input" :"input okInp"}
-                        type="text" placeholder={'Surname'} {...register("surName")}
+                        type="text" placeholder={'Surname'} {...register("surname")}
                     />
 
                     {isValid ?
